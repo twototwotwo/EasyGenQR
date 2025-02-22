@@ -1,0 +1,33 @@
+{
+  "manifest_version": 3,
+  "name": "Easy QR Code",
+  "version": "1.0",
+  "description": "Easy to generate and manage QR codes",
+  "permissions": [
+    "clipboardRead",
+    "storage",
+    "notifications",
+    "tabs",
+    "scripting",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup/index.html",
+    "default_icon": {
+      "16": "icons/icon16.svg",
+      "48": "icons/icon48.svg",
+      "128": "icons/icon128.svg"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.svg",
+    "48": "icons/icon48.svg",
+    "128": "icons/icon128.svg"
+  }
+}
