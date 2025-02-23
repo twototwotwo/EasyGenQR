@@ -1,7 +1,8 @@
-# EasyGenQR - Quick QR Code Generator & Manager | 快速二维码生成与管理工具
+# EasyGenQR - Easy QR Code Generator & Manager | 高效二维码生成与管理工具
 ## 项目简介
 
-一款便捷高效的Chrome扩展插件，提供二维码生成与管理功能，支持剪贴板内容捕获和历史记录管 理，未来将扩展至VS Code等开发者常用场景。
+一款便捷高效的Chrome扩展插件，提供二维码生成与管理功能，支持剪贴板内容捕获和历史记录管理（95%以上代码由cursor完成）</p>
+A convenient and efficient Chrome extension that provides QR code generation and management features, supports clipboard content capture, and manages history records (with over 95% of the code completed by Cursor).
 
 ## 📦 安装指南 / Installation
 ```bash
