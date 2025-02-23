@@ -4,26 +4,26 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
-  <title>Easy QR Code</title>
+  <title id="extensionTitle"></title>
 </head>
 <body>
   <div class="container">
-    <h1>二维码生成器</h1>
+    <h1 id="extensionName"></h1>
     <div class="input-section">
-      <textarea id="linkInput" placeholder="粘贴链接生成二维码..."></textarea>
-      <button id="generateBtn">生成二维码</button>
+      <textarea id="linkInput" placeholder="Paste link to generate QR code..." aria-label="Paste link to generate QR code..."></textarea>
+      <button id="generateBtn"></button>
     </div>
     
     <div id="qrCode" class="qr-section"></div>
 
     <div class="history-section">
-      <h3>历史记录</h3>
+      <h3 id="historyTitle"></h3>
       <div id="pinnedList" class="history-list"></div>
       <div id="historyList" class="history-list"></div>
     </div>
 
     <div class="trash-section">
-      <h3>回收站</h3>
+      <h3 id="trashTitle"></h3>
       <div id="trashList" class="history-list"></div>
     </div>
   </div>

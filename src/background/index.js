@@ -64,4 +64,30 @@ chrome.notifications.onButtonClicked.addListener((notificationId, buttonIndex) =
 });
 
 // 定期检查剪贴板
-setInterval(checkClipboard, 2000); 
+setInterval(checkClipboard, 2000);
+
+chrome.commands.onCommand.addListener((command) => {
+  if (command === "open-popup") {
+    chrome.action.openPopup();
+  }
+});
+
+// 创建上下文菜单
+chrome.runtime.onInstalled.addListener(() => {
+  chrome.contextMenus.create({
+    id: "generateQRCode",
+    title: chrome.i18n.getMessage("contextMenuGenerateQRCode"),
+    contexts: ["page"]  // 仅在网页上下文中显示
+  });
+});
+
+// 处理上下文菜单点击事件
+chrome.contextMenus.onClicked.addListener((info, tab) => {
+  if (info.menuItemId === "generateQRCode") {
+    const url = tab.url;  // 获取当前页面的 URL
+    chrome.storage.local.set({ pendingLink: url }, () => {
+      chrome.action.openPopup();  // 打开扩展的弹出窗口
+      chrome.action.setIcon({ path: "icons/icon48.svg", tabId: tab.id }); // 设置图标
+    });
+  }
+}); 

@@ -14,7 +14,11 @@ class QRCodeManager {
     this.historyList = document.getElementById('historyList');
     this.trashList = document.getElementById('trashList');
 
+    // 获取多语言内容
+    this.setLocalizedText();
+
     await this.loadHistory();
+    await this.loadTrash();
     this.renderHistory();
     this.renderTrash();
 
@@ -27,15 +31,25 @@ class QRCodeManager {
     }
   }
 
+  setLocalizedText() {
+    console.log(chrome.i18n.getMessage("linkPlaceholder"));
+    document.getElementById('extensionName').textContent = chrome.i18n.getMessage("extensionName");
+    document.getElementById('historyTitle').textContent = chrome.i18n.getMessage("history");
+    document.getElementById('trashTitle').textContent = chrome.i18n.getMessage("trash");
+    document.getElementById('generateBtn').textContent = chrome.i18n.getMessage("generateQRCode");
+    document.getElementById('linkInput').placeholder = chrome.i18n.getMessage("linkPlaceholder");
+  }
+
   bindEvents() {
     this.generateBtn.addEventListener('click', () => this.handleGenerate());
     this.linkInput.addEventListener('paste', () => {
       setTimeout(() => this.handleGenerate(), 100);
     });
 
-    // 为历史记录列表添加事件委托
+    // 为历史记录和回收站列表添加事件委托
     this.pinnedList.addEventListener('click', (e) => this.handleHistoryAction(e));
     this.historyList.addEventListener('click', (e) => this.handleHistoryAction(e));
+    this.trashList.addEventListener('click', (e) => this.handleTrashAction(e));
   }
 
   handleHistoryAction(e) {
@@ -48,21 +62,35 @@ class QRCodeManager {
     const url = item.dataset.url;
     const index = this.history.findIndex(h => h.url === url);
 
-    console.log(`Button clicked: ${button.dataset.action}, URL: ${url}, Index: ${index}`);
-
     switch (button.dataset.action) {
       case 'pin':
         this.togglePin(index);
         break;
       case 'delete':
-        this.deleteItem(index);
-        break;
-      case 'restore':
-        const trashIndex = this.trash.findIndex(h => h.url === url);
-        this.restoreItem(trashIndex);
+        this.deleteFromHistory(index);
         break;
       case 'regenerate':
         this.generateQRCode(url);
+        break;
+    }
+  }
+
+  handleTrashAction(e) {
+    const button = e.target.closest('button');
+    if (!button) return;
+
+    const item = button.closest('.history-item');
+    if (!item) return;
+
+    const url = item.dataset.url;
+    const index = this.trash.findIndex(h => h.url === url);
+
+    switch (button.dataset.action) {
+      case 'restore':
+        this.restoreToHistory(index);
+        break;
+      case 'delete':
+        this.deleteFromTrash(index);
         break;
     }
   }
@@ -77,7 +105,6 @@ class QRCodeManager {
   }
 
   async generateQRCode(url) {
-    console.log(`Generating QR Code for: ${url}`); // 调试信息
     this.qrCode.innerHTML = ''; // 清空之前的二维码
     try {
       const canvas = document.createElement('canvas');
@@ -86,7 +113,6 @@ class QRCodeManager {
         margin: 2
       });
       this.qrCode.appendChild(canvas); // 将生成的二维码添加到 DOM
-      console.log('QR Code generated successfully'); // 调试信息
     } catch (err) {
       console.error('QR Code generation failed:', err);
       this.qrCode.innerHTML = '<p style="color: red;">生成失败，请重试</p>';
@@ -122,27 +148,25 @@ class QRCodeManager {
   }
 
   async togglePin(index) {
-    const history = await this.getHistory();
-    const item = history[index];
-    
-    // 如果是在置顶列表中
-    if (item.isPinned) {
-      item.isPinned = false;
-    } else {
-      item.isPinned = true;
+    if (!this.history || index < 0 || index >= this.history.length) {
+      console.error('Invalid history or index:', this.history, index);
+      return; // 退出方法
     }
-
-    await chrome.storage.local.set({ qrHistory: history });
+    const item = this.history[index];
+    item.isPinned = !item.isPinned; // 切换置顶状态
+  
+    await chrome.storage.local.set({ qrHistory: this.history });
     await this.loadHistory();
     this.renderHistory();
   }
 
-  async deleteItem(index) {
+  async deleteFromHistory(index) {
     const history = await this.getHistory();
     const deletedItem = history.splice(index, 1)[0]; // 删除项并保存
     await chrome.storage.local.set({ qrHistory: history });
     await this.addToTrash(deletedItem); // 添加到回收站
-    console.log(`Deleted item: ${deletedItem.url}`); // 调试信息
+    await this.loadHistory();
+    await this.loadTrash();
     this.renderHistory(); // 更新历史记录 UI
     this.renderTrash(); // 更新回收站 UI
   }
@@ -153,13 +177,23 @@ class QRCodeManager {
     await chrome.storage.local.set({ qrTrash: trash });
   }
 
-  async restoreItem(index) {
+  async restoreToHistory(index) {
     const trash = await this.getTrash();
     const restoredItem = trash.splice(index, 1)[0]; // 恢复项并删除
     await chrome.storage.local.set({ qrTrash: trash });
     await this.addToHistory(restoredItem.url); // 重新添加到历史记录
-    console.log(`Restored item: ${restoredItem.url}`); // 调试信息
+    await this.loadHistory();
+    await this.loadTrash();
     this.renderHistory(); // 更新历史记录 UI
+    this.renderTrash(); // 更新回收站 UI
+  }
+
+  async deleteFromTrash(index) {
+    const trash = await this.getTrash();
+    trash.splice(index, 1); // 从回收站中删除项
+    await chrome.storage.local.set({ qrTrash: trash });
+    await this.loadHistory();
+    await this.loadTrash();
     this.renderTrash(); // 更新回收站 UI
   }
 

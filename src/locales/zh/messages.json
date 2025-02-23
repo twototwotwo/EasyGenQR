@@ -1,0 +1,29 @@
+{
+  "extensionName": {
+    "message": "二维码生成器"
+  },
+  "extensionDescription": {
+    "message": "轻松生成和管理二维码"
+  },
+  "generateQRCode": {
+    "message": "生成二维码"
+  },
+  "history": {
+    "message": "历史记录"
+  },
+  "trash": {
+    "message": "回收站"
+  },
+  "restore": {
+    "message": "恢复"
+  },
+  "delete": {
+    "message": "删除"
+  },
+  "linkPlaceholder": {
+    "message": "粘贴链接生成二维码..."
+  },
+  "contextMenuGenerateQRCode": {
+    "message": "为当前页面生成二维码"
+  }
+}

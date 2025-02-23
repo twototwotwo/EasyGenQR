@@ -29,7 +29,7 @@ chrome://extensions/
 | 中文操作 | English Operation |
 |---------|-------------------|
 | 🖱️ **右键生成**：<br>在任何网页右键 → 选择"生成当前页面二维码" | 🖱️ **Context Menu**:<br>Right-click → "Generate QR for this page" |
-| ⌨️ **快捷键**：<br>Ctrl+Shift+Q (Win) / Cmd+Shift+Q (Mac) | ⌨️ **Hotkeys**:<br>Ctrl+Shift+Q (Win) / Cmd+Shift+Q (Mac) |
+| ⌨️ **快捷键**：<br>Ctrl+Shift+E (Win) / Cmd+Shift+E (Mac) | ⌨️ **Hotkeys**:<br>Ctrl+Shift+E (Win) / Cmd+Shift+E (Mac) |
 | 📋 **剪贴板识别**：<br>复制文本 → 点击插件图标 | 📋 **Clipboard**:<br>Copy text → Click extension icon |
 
 ## 🤝 贡献指南 / Contributing

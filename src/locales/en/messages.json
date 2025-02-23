@@ -1,0 +1,29 @@
+{
+  "extensionName": {
+    "message": "Easy QR Code"
+  },
+  "extensionDescription": {
+    "message": "Easy to generate and manage QR codes"
+  },
+  "generateQRCode": {
+    "message": "Generate QR Code"
+  },
+  "history": {
+    "message": "History"
+  },
+  "trash": {
+    "message": "Trash"
+  },
+  "restore": {
+    "message": "Restore"
+  },
+  "delete": {
+    "message": "Delete"
+  },
+  "linkPlaceholder": {
+    "message": "Paste link to generate QR code..."
+  },
+  "contextMenuGenerateQRCode": {
+    "message": "Generate QR Code for Current Page"
+  }
+}

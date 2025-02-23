@@ -3,13 +3,15 @@
   "name": "Easy QR Code",
   "version": "1.0",
   "description": "Easy to generate and manage QR codes",
+  "default_locale": "en",
   "permissions": [
     "clipboardRead",
     "storage",
     "notifications",
     "tabs",
     "scripting",
-    "activeTab"
+    "activeTab",
+    "contextMenus"
   ],
   "host_permissions": [
     "<all_urls>"
@@ -20,14 +22,22 @@
   "action": {
     "default_popup": "popup/index.html",
     "default_icon": {
-      "16": "icons/icon16.svg",
-      "48": "icons/icon48.svg",
-      "128": "icons/icon128.svg"
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
     }
   },
   "icons": {
-    "16": "icons/icon16.svg",
-    "48": "icons/icon48.svg",
-    "128": "icons/icon128.svg"
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "commands": {
+    "open-popup": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+E"
+      },
+      "description": "Open the QR Code Generator"
+    }
   }
 }

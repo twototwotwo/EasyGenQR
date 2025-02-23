@@ -10,20 +10,26 @@ function copyAssets() {
         // 确保目标目录存在
         mkdirSync('dist/icons', { recursive: true });
         mkdirSync('dist/popup', { recursive: true });
+        mkdirSync('dist/_locales/en', { recursive: true });
+        mkdirSync('dist/_locales/zh', { recursive: true });
         
         // 复制 manifest.json
         copyFileSync('src/manifest.json', 'dist/manifest.json');
         
         // 复制图标文件
-        copyFileSync('src/icons/icon16.svg', 'dist/icons/icon16.svg');
-        copyFileSync('src/icons/icon48.svg', 'dist/icons/icon48.svg');
-        copyFileSync('src/icons/icon128.svg', 'dist/icons/icon128.svg');
+        copyFileSync('src/icons/icon16.png', 'dist/icons/icon16.png');
+        copyFileSync('src/icons/icon48.png', 'dist/icons/icon48.png');
+        copyFileSync('src/icons/icon128.png', 'dist/icons/icon128.png');
 
         // 复制样式文件
         copyFileSync('src/popup/style.css', 'dist/popup/style.css');
 
         // 复制 HTML 文件
         copyFileSync('src/popup/index.html', 'dist/popup/index.html');
+
+        // 复制多语言文件
+        copyFileSync('src/locales/en/messages.json', 'dist/_locales/en/messages.json');
+        copyFileSync('src/locales/zh/messages.json', 'dist/_locales/zh/messages.json');
 
         console.log('Assets copied successfully!');
       } catch (err) {

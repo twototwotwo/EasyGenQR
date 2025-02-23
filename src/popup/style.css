@@ -124,23 +124,23 @@ h1 {
   padding-right: 8px;
 }
 
-/* 自定义滚动条 */
-.history-list::-webkit-scrollbar {
-  width: 6px;
+/* 自定义滚动条样式 */
+::-webkit-scrollbar {
+  width: 8px; /* 滚动条的宽度 */
 }
 
-.history-list::-webkit-scrollbar-track {
-  background: transparent;
+::-webkit-scrollbar-track {
+  background: var(--surface-color); /* 滚动条轨道的背景色 */
+  border-radius: 10px; /* 圆角 */
 }
 
-.history-list::-webkit-scrollbar-thumb {
-  background: var(--primary-light);
-  border-radius: 20px;
-  opacity: 0.5;
+::-webkit-scrollbar-thumb {
+  background: var(--primary-light); /* 滚动条的颜色 */
+  border-radius: 10px; /* 圆角 */
 }
 
-.history-list::-webkit-scrollbar-thumb:hover {
-  background: var(--primary-color);
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-color); /* 悬停时的颜色 */
 }
 
 .history-item {
@@ -252,4 +252,17 @@ h1 {
 .trash-list {
   max-height: 200px;
   overflow-y: auto;
+}
+
+async togglePin(index) {
+  if (!this.history || index < 0 || index >= this.history.length) {
+    console.error('Invalid history or index:', this.history, index);
+    return; // 退出方法
+  }
+  const item = this.history[index];
+  item.isPinned = !item.isPinned; // 切换置顶状态
+
+  await chrome.storage.local.set({ qrHistory: this.history });
+  await this.loadHistory();
+  this.renderHistory();
 } 

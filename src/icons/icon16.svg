@@ -1,7 +1,15 @@
-<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-  <rect width="16" height="16" fill="#4CAF50" rx="3"/>
-  <rect x="4" y="4" width="8" height="8" fill="white" rx="1"/>
-  <rect x="5.5" y="5.5" width="2" height="2" fill="#4CAF50"/>
-  <rect x="8.5" y="5.5" width="2" height="2" fill="#4CAF50"/>
-  <rect x="5.5" y="8.5" width="2" height="2" fill="#4CAF50"/>
-</svg> 
+<svg width="16" height="16" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg" style="transform: scale(0.125);">
+  <!-- 背景 -->
+  <rect width="128" height="128" rx="20" ry="20" fill="#FF5000"/>
+
+  <!-- 放大后的中央大方块（圆角） -->
+  <rect x="24" y="24" width="80" height="80" rx="10" ry="10" fill="#FFFFFF"/>
+
+  <!-- 内部三个小方块 -->
+  <rect x="40" y="40" width="20" height="20" fill="#FF5000"/>
+  <rect x="68" y="40" width="20" height="20" fill="#FF5000"/>
+  <rect x="40" y="68" width="20" height="20" fill="#FF5000"/>
+  
+  <!-- 倒三角形代替第四个方块 -->
+  <polygon points="68,68 78,88 88,68" fill="#FF5000"/>
+</svg>
