@@ -12,9 +12,11 @@ class QRCodeManager {
     this.qrCode = document.getElementById('qrCode');
     this.pinnedList = document.getElementById('pinnedList');
     this.historyList = document.getElementById('historyList');
+    this.trashList = document.getElementById('trashList');
 
     await this.loadHistory();
     this.renderHistory();
+    this.renderTrash();
 
     // 检查是否有待处理的链接
     const { pendingLink } = await chrome.storage.local.get('pendingLink');
@@ -53,8 +55,9 @@ class QRCodeManager {
       case 'delete':
         this.deleteItem(index);
         break;
-      case 'regenerate':
-        this.generateQRCode(url);
+      case 'restore':
+        const trashIndex = this.trash.findIndex(h => h.url === url);
+        this.restoreItem(trashIndex);
         break;
     }
   }
@@ -129,9 +132,26 @@ class QRCodeManager {
 
   async deleteItem(index) {
     const history = await this.getHistory();
-    history.splice(index, 1);
+    const deletedItem = history.splice(index, 1)[0]; // 删除项并保存
     await chrome.storage.local.set({ qrHistory: history });
+    await this.addToTrash(deletedItem); // 添加到回收站
     this.renderHistory();
+    this.renderTrash();
+  }
+
+  async addToTrash(item) {
+    const trash = await this.getTrash();
+    trash.push(item);
+    await chrome.storage.local.set({ qrTrash: trash });
+  }
+
+  async restoreItem(index) {
+    const trash = await this.getTrash();
+    const restoredItem = trash.splice(index, 1)[0]; // 恢复项并删除
+    await chrome.storage.local.set({ qrTrash: trash });
+    await this.addToHistory(restoredItem.url); // 重新添加到历史记录
+    this.renderHistory();
+    this.renderTrash();
   }
 
   async getHistory() {
@@ -139,8 +159,17 @@ class QRCodeManager {
     return result.qrHistory || [];
   }
 
+  async getTrash() {
+    const result = await chrome.storage.local.get('qrTrash');
+    return result.qrTrash || [];
+  }
+
   async loadHistory() {
     this.history = await this.getHistory();
+  }
+
+  async loadTrash() {
+    this.trash = await this.getTrash();
   }
 
   renderHistory() {
@@ -173,6 +202,31 @@ class QRCodeManager {
           </button>
           <button class="action-btn" data-action="regenerate" title="重新生成">
             🔄
+          </button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  renderTrash() {
+    this.loadTrash().then(() => {
+      this.trashList.innerHTML = this.renderTrashItems(this.trash);
+    });
+  }
+
+  renderTrashItems(items) {
+    return items.map((item, index) => `
+      <div class="history-item" data-url="${item.url}">
+        <div class="history-item-content">
+          <div class="history-item-url" title="${item.url}">${item.url}</div>
+          <div class="history-item-time">${new Date(item.timestamp).toLocaleString()}</div>
+        </div>
+        <div class="history-item-actions">
+          <button class="action-btn" data-action="restore" title="恢复">
+            🔄
+          </button>
+          <button class="action-btn" data-action="delete" title="彻底删除">
+            🗑️
           </button>
         </div>
       </div>

@@ -18,9 +18,12 @@ async function checkClipboard() {
   try {
     // 获取当前活动标签
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    if (!tab) return;
+    if (!tab || !tab.url.startsWith('http')) return; // 确保是有效的网页
 
     // 在当前标签页中执行剪贴板读取
+    if (tab.url.startsWith('chrome://')) {
+      return;
+    }
     const results = await chrome.scripting.executeScript({
       target: { tabId: tab.id },
       func: () => {
