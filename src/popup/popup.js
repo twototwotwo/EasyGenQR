@@ -48,6 +48,8 @@ class QRCodeManager {
     const url = item.dataset.url;
     const index = this.history.findIndex(h => h.url === url);
 
+    console.log(`Button clicked: ${button.dataset.action}, URL: ${url}, Index: ${index}`);
+
     switch (button.dataset.action) {
       case 'pin':
         this.togglePin(index);
@@ -58,6 +60,9 @@ class QRCodeManager {
       case 'restore':
         const trashIndex = this.trash.findIndex(h => h.url === url);
         this.restoreItem(trashIndex);
+        break;
+      case 'regenerate':
+        this.generateQRCode(url);
         break;
     }
   }
@@ -72,14 +77,16 @@ class QRCodeManager {
   }
 
   async generateQRCode(url) {
-    this.qrCode.innerHTML = '';
+    console.log(`Generating QR Code for: ${url}`); // 调试信息
+    this.qrCode.innerHTML = ''; // 清空之前的二维码
     try {
       const canvas = document.createElement('canvas');
       await QRCode.toCanvas(canvas, url, {
         width: 200,
         margin: 2
       });
-      this.qrCode.appendChild(canvas);
+      this.qrCode.appendChild(canvas); // 将生成的二维码添加到 DOM
+      console.log('QR Code generated successfully'); // 调试信息
     } catch (err) {
       console.error('QR Code generation failed:', err);
       this.qrCode.innerHTML = '<p style="color: red;">生成失败，请重试</p>';
@@ -135,8 +142,9 @@ class QRCodeManager {
     const deletedItem = history.splice(index, 1)[0]; // 删除项并保存
     await chrome.storage.local.set({ qrHistory: history });
     await this.addToTrash(deletedItem); // 添加到回收站
-    this.renderHistory();
-    this.renderTrash();
+    console.log(`Deleted item: ${deletedItem.url}`); // 调试信息
+    this.renderHistory(); // 更新历史记录 UI
+    this.renderTrash(); // 更新回收站 UI
   }
 
   async addToTrash(item) {
@@ -150,8 +158,9 @@ class QRCodeManager {
     const restoredItem = trash.splice(index, 1)[0]; // 恢复项并删除
     await chrome.storage.local.set({ qrTrash: trash });
     await this.addToHistory(restoredItem.url); // 重新添加到历史记录
-    this.renderHistory();
-    this.renderTrash();
+    console.log(`Restored item: ${restoredItem.url}`); // 调试信息
+    this.renderHistory(); // 更新历史记录 UI
+    this.renderTrash(); // 更新回收站 UI
   }
 
   async getHistory() {

@@ -96,6 +96,9 @@ h1 {
   background: white;
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .history-section {
