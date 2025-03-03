@@ -50,6 +50,17 @@ class QRCodeManager {
     this.pinnedList.addEventListener('click', (e) => this.handleHistoryAction(e));
     this.historyList.addEventListener('click', (e) => this.handleHistoryAction(e));
     this.trashList.addEventListener('click', (e) => this.handleTrashAction(e));
+
+    // 处理别名输入框的变化
+    this.pinnedList.addEventListener('input', (e) => {
+      const input = e.target.closest('.alias-input');
+      if (input) {
+        const item = input.closest('.history-item');
+        const url = item.dataset.url;
+        const alias = input.value;
+        this.updateAlias(url, alias);
+      }
+    });
   }
 
   handleHistoryAction(e) {
@@ -71,6 +82,9 @@ class QRCodeManager {
         break;
       case 'regenerate':
         this.generateQRCode(url);
+        break;
+      case 'copy':
+        this.copyToClipboard(url); // 复制链接
         break;
     }
   }
@@ -97,7 +111,10 @@ class QRCodeManager {
 
   async handleGenerate() {
     const url = this.linkInput.value.trim();
-    if (!url) return;
+    if (!url) {
+      this.qrCode.style.display = 'none'; // 隐藏二维码容器
+      return;
+    }
 
     await this.generateQRCode(url);
     await this.addToHistory(url);
@@ -113,9 +130,11 @@ class QRCodeManager {
         margin: 2
       });
       this.qrCode.appendChild(canvas); // 将生成的二维码添加到 DOM
+      this.qrCode.style.display = 'block'; // 显示二维码容器
     } catch (err) {
       console.error('QR Code generation failed:', err);
       this.qrCode.innerHTML = '<p style="color: red;">生成失败，请重试</p>';
+      this.qrCode.style.display = 'none'; // 隐藏二维码容器
     }
   }
 
@@ -233,6 +252,7 @@ class QRCodeManager {
     return items.map(item => `
       <div class="history-item ${item.isPinned ? 'pinned' : ''}" data-url="${item.url}">
         <div class="history-item-content">
+          <input type="text" class="alias-input" value="${item.alias || ''}" placeholder="设置别名" />
           <div class="history-item-url" title="${item.url}">${item.url}</div>
           <div class="history-item-time">${new Date(item.timestamp).toLocaleString()}</div>
         </div>
@@ -245,6 +265,9 @@ class QRCodeManager {
           </button>
           <button class="action-btn" data-action="regenerate" title="重新生成">
             🔄
+          </button>
+          <button class="action-btn" data-action="copy" title="复制链接">
+            📋
           </button>
         </div>
       </div>
@@ -274,6 +297,24 @@ class QRCodeManager {
         </div>
       </div>
     `).join('');
+  }
+
+  async updateAlias(url, alias) {
+    const history = await this.getHistory();
+    const item = history.find(h => h.url === url);
+    if (item) {
+      item.alias = alias; // 更新别名
+      await chrome.storage.local.set({ qrHistory: history });
+    }
+  }
+
+  async copyToClipboard(url) {
+    try {
+      await navigator.clipboard.writeText(url);
+      alert('链接已复制到剪贴板！');
+    } catch (err) {
+      console.error('复制链接失败:', err);
+    }
   }
 }
 

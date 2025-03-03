@@ -91,7 +91,7 @@ h1 {
 .qr-section {
   text-align: center;
   margin: 24px 0;
-  min-height: 200px;
+  min-height: 0;
   padding: 20px;
   background: white;
   border-radius: var(--radius-lg);
@@ -99,6 +99,7 @@ h1 {
   display: flex;
   justify-content: center;
   align-items: center;
+  transition: all 0.3s ease;
 }
 
 .history-section {
@@ -156,7 +157,7 @@ h1 {
 
 .history-item:hover {
   transform: translateX(2px);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-md);
 }
 
 .history-item.pinned {
@@ -254,15 +255,26 @@ h1 {
   overflow-y: auto;
 }
 
-async togglePin(index) {
-  if (!this.history || index < 0 || index >= this.history.length) {
-    console.error('Invalid history or index:', this.history, index);
-    return; // 退出方法
-  }
-  const item = this.history[index];
-  item.isPinned = !item.isPinned; // 切换置顶状态
+.alias-input {
+  width: 100%;
+  padding: 4px;
+  margin-bottom: 8px;
+  height: 30px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  line-height: 1.5;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  background: var(--surface-color);
+}
 
-  await chrome.storage.local.set({ qrHistory: this.history });
-  await this.loadHistory();
-  this.renderHistory();
+.alias-input:focus {
+  border-color: var(--primary-color);
+  outline: none;
+  box-shadow: 0 0 5px var(--primary-light);
+}
+
+.alias-input::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.7;
 } 
